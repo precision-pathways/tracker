@@ -1,5 +1,5 @@
 # Stage 1: Build the Angular application
-FROM node:18 AS build
+FROM node:20 AS build
 
 # Set working directory
 WORKDIR /app
@@ -25,7 +25,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build /app/dist/precision-viewer/browser /usr/share/nginx/html
 
 # Copy the STLLoader file explicitly (if needed)
-COPY node_modules/three/examples/jsm/loaders/STLLoader.js /usr/share/nginx/html/assets/js/
+# COPY node_modules/three/examples/jsm/loaders/STLLoader.js /usr/share/nginx/html/assets/js/
 
 # Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
