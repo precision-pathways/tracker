@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  precision-api:
+    image: precision-api
+    build:
+      context: ./precision-api
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  precision-viewer:
+    image: precision-viewer
+    build:
+      context: ./precision-viewer
+    ports:
+      - "5000:5000"
+    depends_on:
+      - precision-api
+    networks:
+      - app-network
+    environment:
+      - API_HOST=http://precision-api:3000
+
+networks:
+  app-network:
+    driver: bridge
