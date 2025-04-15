@@ -96,13 +96,26 @@ To set up and develop this workspace locally, here’s what you’ll need:
 
 ### **Steps to Run the Docker Compose File**
 
-1. **Navigate to the Project Directory**  
-   Open your terminal and navigate to the folder with your `docker-compose.yml` file:
+ ### **Steps to Run the Docker Compose File**
+
+1. **Load the DICOM 3D Model**  
+   - Open the `notebooks/dicom_processor.ipynb` notebook.  
+   - Run all cells to process the DICOM files and generate the 3D model.
+
+2. **Navigate to the Project Directory**  
+   Open your terminal and navigate to the folder containing the `docker-compose.yml` file:
    ```bash
    cd /path/to/project-directory
-1. **Run docker build**    
+   ```
+
+3. **Build the Docker Containers**  
+   Run the following command to build the containers without using the cache:
    ```bash
    docker compose build --no-cache
-2. **Run docker containers**     
+   ```
+
+4. **Start the Docker Containers**  
+   Use the following command to start the containers and recreate them if necessary:
    ```bash
    docker compose up --force-recreate
+   ```
