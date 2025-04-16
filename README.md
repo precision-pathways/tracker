@@ -34,11 +34,11 @@ The Precision Viewer is where everything comes to life, presenting instrument lo
 
 ### **Our Exciting TODOs** 🚀
 
-1. **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
-2. **Improve 3D Controls**: Add functionality to zoom in, pan, and interact with the 3D space for an enhanced user experience.
-3. **Refine Coordinate Generation**: Make the random coordinate generator more natural and smooth—perfect for showcasing at hackathons!
-4. **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
-5. **Implement Computer Vision**: Use cutting-edge computer vision techniques to track objects in video streams and render them dynamically in the Three.js canvas. This would be a groundbreaking achievement!
+1. [ ] **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
+2. [x] **Improve 3D Controls**: Add functionality to zoom in, pan, and interact with the 3D space for an enhanced user experience.
+3. [ ] **Refine Coordinate Generation**: Make the random coordinate generator more natural and smooth—perfect for showcasing at hackathons!
+4. [ ] **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
+5. [ ] **Implement Computer Vision**: Use cutting-edge computer vision techniques to track objects in video streams and render them dynamically in the Three.js canvas. This would be a groundbreaking achievement!
 
 ---
 
@@ -119,3 +119,6 @@ To set up and develop this workspace locally, here’s what you’ll need:
    ```bash
    docker compose up --force-recreate
    ```
+
+4. **Access the viewer**  
+   The precision tracker view will be available on [http://localhost:5000](http://localhost:5000)

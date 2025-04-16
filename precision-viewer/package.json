@@ -17,6 +17,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "camera-controls": "^2.10.1",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
     "three": "^0.175.0",
