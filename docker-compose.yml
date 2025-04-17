@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  precision-digitizer:
+    image: precision-digitizer
+    build:
+      context: ./precision-digitizer
+    networks:
+      - app-network
+    volumes:
+      - ./notebooks/dicoms:/datain
+      - ./precision-viewer/src/assets:/dataout
+    environment:
+      - DATAIN=/datain
+      - DATAOUT=/dataout
+
   precision-api:
     image: precision-api
     build:
@@ -22,6 +35,8 @@ services:
       - app-network
     environment:
       - API_HOST=http://precision-api:3000
+    volumes:
+      - ./precision-viewer:/dataout
 
 networks:
   app-network:

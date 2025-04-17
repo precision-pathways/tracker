@@ -34,11 +34,11 @@ The Precision Viewer is where everything comes to life, presenting instrument lo
 
 ### **Our Exciting TODOs** 🚀
 
-1. **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
-2. **Improve 3D Controls**: Add functionality to zoom in, pan, and interact with the 3D space for an enhanced user experience.
-3. **Refine Coordinate Generation**: Make the random coordinate generator more natural and smooth—perfect for showcasing at hackathons!
-4. **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
-5. **Implement Computer Vision**: Use cutting-edge computer vision techniques to track objects in video streams and render them dynamically in the Three.js canvas. This would be a groundbreaking achievement!
+1. [ ] **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
+2. [x] **Improve 3D Controls**: Add functionality to zoom in, pan, and interact with the 3D space for an enhanced user experience.
+3. [ ] **Refine Coordinate Generation**: Make the random coordinate generator more natural and smooth—perfect for showcasing at hackathons!
+4. [ ] **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
+5. [ ] **Implement Computer Vision**: Use cutting-edge computer vision techniques to track objects in video streams and render them dynamically in the Three.js canvas. This would be a groundbreaking achievement!
 
 ---
 
@@ -98,24 +98,23 @@ To set up and develop this workspace locally, here’s what you’ll need:
 
  ### **Steps to Run the Docker Compose File**
 
-1. **Load the DICOM 3D Model**  
-   - Open the `notebooks/dicom_processor.ipynb` notebook.  
-   - Run all cells to process the DICOM files and generate the 3D model.
-
-2. **Navigate to the Project Directory**  
+1. **Navigate to the Project Directory**  
    Open your terminal and navigate to the folder containing the `docker-compose.yml` file:
    ```bash
    cd /path/to/project-directory
    ```
 
-3. **Build the Docker Containers**  
+2. **Build the Docker Containers**  
    Run the following command to build the containers without using the cache:
    ```bash
    docker compose build --no-cache
    ```
 
-4. **Start the Docker Containers**  
+3. **Start the Docker Containers**  
    Use the following command to start the containers and recreate them if necessary:
    ```bash
    docker compose up --force-recreate
    ```
+
+4. **Access the viewer**  
+   The precision tracker view will be available on [http://localhost:5000](http://localhost:5000)
