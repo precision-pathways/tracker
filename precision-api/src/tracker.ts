@@ -1,10 +1,9 @@
 import {
   WebSocketGateway,
   WebSocketServer,
-  SubscribeMessage,
-  MessageBody,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { StreamService } from './stream';
 
 @WebSocketGateway({
   cors: {
@@ -16,16 +15,21 @@ export class TrackerGateway {
   @WebSocketServer()
   server: Server;
 
-  // Send random coordinates every 5 seconds
+  private streamService: StreamService;
+
   constructor() {
-    setInterval(() => {
-      const randomCoordinates = {
-        x: (Math.random() * 5).toFixed(0), // Random x between 0 and 15
-        y: (Math.random() * 5).toFixed(0), // Random y between 0 and 15
-        z: (Math.random() * 5).toFixed(0), // Random z between 0 and 15
-      };
-      this.server.emit('location', randomCoordinates);
-      console.log('Sent coordinates:', randomCoordinates);
+    // Use environment variable or fallback to default
+    const streamUrl = process.env.HLS_STREAM_URL || 'http://localhost:8000/stream.m3u8';
+    this.streamService = new StreamService(streamUrl);
+
+    setInterval(async () => {
+      try {
+        const coordinates = await this.streamService.getFrameCoordinates();
+        this.server.emit('location', coordinates);
+        console.log('Sent coordinates:', coordinates);
+      } catch (err) {
+        console.error('Error getting coordinates:', err);
+      }
     }, 5000); // 5 seconds
   }
 }

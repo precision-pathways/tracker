@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  precision-streamer:
+    image: precision-streamer
+    build:
+      context: ./precision-streamer
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+      
   precision-digitizer:
     image: precision-digitizer
     build:
@@ -22,6 +31,8 @@ services:
       - "3000:3000"
     networks:
       - app-network
+    environment:
+      - HLS_STREAM_URL=http://precision-streamer:8000/stream.m3u8
 
   precision-viewer:
     image: precision-viewer
