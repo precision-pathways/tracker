@@ -19,10 +19,13 @@ export class TrackerService {
   }
 
   // Subscribe to the 'location' event
-  onLocation(): Observable<{ x: number; y: number; z: number }> {
+  // ...existing code...
+
+  // Subscribe to the 'location' event
+  onLocation(): Observable<{ x: number; y: number; z: number }[]> {
     return new Observable((observer) => {
-      this.socket.on('location', (data: { x: number; y: number; z: number }) => {
-        observer.next(data); // Emit the received data
+      this.socket.on('location', (data: { x: number; y: number; z: number }[]) => {
+        observer.next(data); // Emit the received array of coordinates
       });
 
       // Handle cleanup when the subscription is closed

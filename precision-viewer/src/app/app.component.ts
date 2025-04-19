@@ -5,8 +5,6 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { TrackerService } from './tracker.service';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,15 +13,14 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  private dot!: THREE.Mesh;
+  private dots: THREE.Mesh[] = [];
   private camera!: THREE.PerspectiveCamera;
   private scene!: THREE.Scene;
   private renderer!: THREE.WebGLRenderer;
   private controls!: OrbitControls;
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private trackerService: TrackerService) {
-  }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private trackerService: TrackerService) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -43,7 +40,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.addGrids(this.scene);
     this.loadSTLModel(this.scene);
-    this.addDot(this.scene);
     this.addLighting(this.scene);
 
     this.initControls();
@@ -68,7 +64,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   private createRenderer(): THREE.WebGLRenderer {
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // document.body.appendChild(renderer.domElement);
     return renderer;
   }
 
@@ -103,16 +98,32 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private addDot(scene: THREE.Scene): void {
-    const dotGeometry = new THREE.SphereGeometry(0.1, 32, 32);
-    const dotMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
-      emissive: 0xff0000,
-      emissiveIntensity: 2,
+  // Helper to add or update dots based on incoming coordinates
+  private addOrUpdateDots(coordinates: { x: number; y: number; z: number }[], scene: THREE.Scene): void {
+    // Scaling factor to fit large coordinates into the view
+    const SCALE = 0.003; // Adjust as needed for your scene size
+  
+    // Remove extra dots if needed
+    while (this.dots.length > coordinates.length) {
+      const dot = this.dots.pop();
+      if (dot) scene.remove(dot);
+    }
+    // Add new dots if needed
+    while (this.dots.length < coordinates.length) {
+      const dotGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+      const dotMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        emissive: 0xff0000,
+        emissiveIntensity: 2,
+      });
+      const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+      scene.add(dot);
+      this.dots.push(dot);
+    }
+    // Update positions with scaling
+    coordinates.forEach((coord, i) => {
+      this.dots[i].position.set(coord.x * SCALE, coord.y * SCALE, coord.z * SCALE);
     });
-    this.dot = new THREE.Mesh(dotGeometry, dotMaterial);
-    this.dot.position.set(0, 0, 0);
-    scene.add(this.dot);
   }
 
   private addLighting(scene: THREE.Scene): void {
@@ -138,10 +149,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      // Pulsate the dot
+      // Pulsate all dots
       const elapsedTime = clock.getElapsedTime();
       const scale = 1 + 0.2 * Math.sin(elapsedTime * 2);
-      this.dot.scale.set(scale, scale, scale);
+      this.dots.forEach(dot => dot.scale.set(scale, scale, scale));
 
       // Update controls
       const delta = clock.getDelta();
@@ -154,31 +165,27 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private subscribeToLocationUpdates(): void {
-    this.trackerService.onLocation().subscribe((data: { x: number; y: number; z: number }) => {
-      console.log('Received coordinates:', data);
-      if (this.dot) {
-        this.dot.position.set(data.x, data.y, data.z);
+    this.trackerService.onLocation().subscribe((data: { x: number; y: number; z: number }[]) => {
+      this.addOrUpdateDots(data, this.scene);
 
-        // Animate the dot scaling like a heartbeat
-        const initialScale = 1;
-        const targetScale = 1.5;
-        const duration = 0.5;
-        let elapsedTime = 0;
+      // Animate all dots scaling like a heartbeat
+      const initialScale = 1;
+      const targetScale = 1.5;
+      const duration = 0.5;
+      let elapsedTime = 0;
 
-        const animateScale = () => {
-          elapsedTime += 0.01;
-          const scale = THREE.MathUtils.lerp(initialScale, targetScale, elapsedTime / duration);
-          this.dot.scale.set(scale, scale, scale);
+      const animateScale = () => {
+        elapsedTime += 0.01;
+        const scale = THREE.MathUtils.lerp(initialScale, targetScale, elapsedTime / duration);
+        this.dots.forEach(dot => dot.scale.set(scale, scale, scale));
+        if (elapsedTime < duration) {
+          requestAnimationFrame(animateScale);
+        } else {
+          this.dots.forEach(dot => dot.scale.set(initialScale, initialScale, initialScale));
+        }
+      };
 
-          if (elapsedTime < duration) {
-            requestAnimationFrame(animateScale);
-          } else {
-            this.dot.scale.set(initialScale, initialScale, initialScale);
-          }
-        };
-
-        animateScale();
-      }
+      animateScale();
     });
   }
 }

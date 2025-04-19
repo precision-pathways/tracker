@@ -1,43 +1,66 @@
-# **Precision Pathways**
+# Precision Pathways
 
-<img src="./precision-pathways.gif" alt="demo">
+[![Precision Pathways Demo](./precision-pathways.gif)](./precision-pathways.gif)
 
-### **A Vision for Innovation**
+Precision Pathways is a simulation platform that bridges technology and healthcare. By integrating real-time video feeds, DICOM digitization, and interactive 3D visualization, the project supports surgical procedure monitoring and remote case review for enhanced patient care and professional education.
 
-Precision Pathways isn’t just another project, it’s a bold leap towards bridging the gap between technology and healthcare. With every milestone, we’re shaping the future of surgery, one landmark at a time.
+## Overview
 
-### **Revolutionizing Surgical Instrument Tracking**
+**Precision Pathways** simulates 3D navigation in surgical environments through three core services:
 
-Precision Pathways is an exciting project dedicated to transforming how instruments are tracked during surgeries. Picture a world where complex procedures are enhanced with precise, real-time insights, empowering medical professionals to navigate anatomy with complete confidence. By harnessing advanced imaging technologies, like DICOM files, this project paves the way for more efficient and life-saving surgical interventions.
+- **precision-streamer:**  
+  Simulates a live video feed representing the ongoing patient procedure.
 
-The ultimate goal is to seamlessly map and monitor the positions of critical instruments in relation to anatomical landmarks. Every millimeter matters when it comes to saving lives.
+- **precision-digitizer:**  
+  Processes raw DICOM images into a detailed 3D model of the operative area.
+
+- **precision-viewer:**  
+  Renders the 3D model along with real-time instrument positions, enabling remote practitioners to monitor and review cases.
+
+This combination of services facilitates remote consultation, intraoperative monitoring, and educational insights for practitioners not physically present with the patient.
+
+## Background Context
+
+In the modern healthcare setting, the ability to remotely observe and interact with live procedures is critical. Precision Pathways achieves this by:
+
+- **Simulating Live Procedures:**  
+  The precision-streamer provides a dependable simulation of a surgical video feed, essential for real-time observation.
+  
+- **3D Anatomical Modeling:**  
+  Using processed DICOM images, the precision-digitizer creates accurate 3D representations of the surgical field, aiding both in navigation and post-procedure analysis.
+  
+- **Real-Time Monitoring & Training:**  
+  The precision-viewer displays live instrument positioning and the 3D model, offering a platform for intraoperative decision-making and remote expert consultation.
+
+This approach not only enhances patient monitoring but also serves as an invaluable training tool for healthcare professionals.
 
 ---
 
 ### **Precision API**
 
-At the heart of this project is the Precision API, the reliable tracker responsible for monitoring and sending real-time locations of instruments for seamless integration with connected systems. Built on the dependable NestJS framework, the API ensures robust communication and exceptional performance.
+The Precision API service is developed with NestJS and serves as the central hub for collecting and distributing real-time instrument tracking data. Built from the `./precision-api` project and exposed on port 3000, it receives a simulated HLS video feed from the precision-streamer via the environment variable `HLS_STREAM_URL=http://precision-streamer:8000/stream.m3u8`. This setup ensures robust communication and seamless integration between the streaming solution and the 3D visualization components.
 
 ---
 
-### **Notebooks**
+### **Data Processing & Notebooks**
 
-This is a development-facing folder that hosts Jupyter notebooks, designed for processing data like converting DICOM images into SIL objects. It serves as a crucial component for preparing and refining inputs for the system.
+Within this system, the precision-digitizer service plays a crucial role in data preparation. It leverages the contents of the `./notebooks/dicoms` directory to process raw DICOM images. The service converts these images into structural assets suitable for 3D rendering and outputs them to the `./precision-viewer/src/assets` directory. Controlled by the environment variables `DATAIN` and `DATAOUT`, this workflow ensures that healthcare imaging data is effectively refined for visualization and further analysis.
 
 ---
 
 ### **Precision Viewer**
 
-The Precision Viewer is where everything comes to life, presenting instrument locations in an interactive 3D space. From healthcare professionals to tech enthusiasts, this viewer transforms raw data into visually captivating and intuitive insights.
+The precision-viewer service brings the simulation platform to life by delivering an interactive 3D visualization of the surgical scene. Built from the `./precision-viewer` project, it communicates with the Precision API using the URL `http://precision-api:3000` (set through the `API_HOST` environment variable) to retrieve live instrument positioning data. Exposed on port 5000, the viewer offers a comprehensive interface that allows practitioners to actively monitor, review, and interact with detailed 3D models during simulated procedures.
+
 
 ---
 
 ### **Our Exciting TODOs** 🚀
 
-1. [ ] **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
+1. [X] **Convert DICOM Files to SIL Objects**: Transform raw medical imaging files into objects that can load seamlessly in our Angular app.
 2. [x] **Improve 3D Controls**: Add functionality to zoom in, pan, and interact with the 3D space for an enhanced user experience.
 3. [ ] **Refine Coordinate Generation**: Make the random coordinate generator more natural and smooth—perfect for showcasing at hackathons!
-4. [ ] **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
+4. [X] **Process Video Streams**: Enable the same level of processing for video streams as we do for DICOM files, unlocking more possibilities.
 5. [ ] **Implement Computer Vision**: Use cutting-edge computer vision techniques to track objects in video streams and render them dynamically in the Three.js canvas. This would be a groundbreaking achievement!
 
 ---
@@ -96,8 +119,6 @@ To set up and develop this workspace locally, here’s what you’ll need:
 
 ### **Steps to Run the Docker Compose File**
 
- ### **Steps to Run the Docker Compose File**
-
 1. **Navigate to the Project Directory**  
    Open your terminal and navigate to the folder containing the `docker-compose.yml` file:
    ```bash
@@ -107,14 +128,17 @@ To set up and develop this workspace locally, here’s what you’ll need:
 2. **Build the Docker Containers**  
    Run the following command to build the containers without using the cache:
    ```bash
-   docker compose build --no-cache
+   docker compose build
    ```
 
 3. **Start the Docker Containers**  
    Use the following command to start the containers and recreate them if necessary:
    ```bash
-   docker compose up --force-recreate
+   docker compose up
    ```
 
 4. **Access the viewer**  
    The precision tracker view will be available on [http://localhost:5000](http://localhost:5000)
+
+#### **Reference:**
+Surgery videos: https://www.laparoscopyhospital.com/free-robotic-surgery-video.html
