@@ -1,11 +1,19 @@
 # Stage 1: Build the Angular application
 FROM node:20 AS build
 
+ADD ZscalerRootCertificate-2048-SHA256.crt /usr/local/share/ca-certificates/ZscalerRootCertificate.crt
+RUN chmod 644 /usr/local/share/ca-certificates/ZscalerRootCertificate.crt && update-ca-certificates
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Configure npm to use the custom certificate
+RUN npm config set cafile /usr/local/share/ca-certificates/ZscalerRootCertificate.crt
+
 
 # Install dependencies
 RUN npm install
