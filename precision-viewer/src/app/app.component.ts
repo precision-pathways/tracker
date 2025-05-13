@@ -20,6 +20,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   private controls!: OrbitControls;
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
+  spinInterval: number | null = null;
+  spinVerticalInterval: number | null = null;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private trackerService: TrackerService) {}
 
   ngOnInit(): void {
@@ -102,7 +105,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   private addOrUpdateDots(coordinates: { x: number; y: number; z: number }[], scene: THREE.Scene): void {
     // Scaling factor to fit large coordinates into the view
     const SCALE = 0.003; // Adjust as needed for your scene size
-  
+
     // Remove extra dots if needed
     while (this.dots.length > coordinates.length) {
       const dot = this.dots.pop();
@@ -187,5 +190,42 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       animateScale();
     });
+  }
+
+  spinCamera(): void {
+    if (this.spinInterval) {
+      this.stopSpinning();
+      return;
+    }
+    this.stopSpinning();
+    this.spinInterval = window.setInterval(() => {
+      this.camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.02);
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      this.renderer.render(this.scene, this.camera);
+    }, 16);
+  }
+
+  spinCameraVertical() {
+    if (this.spinVerticalInterval) {
+      this.stopSpinning();
+      return;
+    }
+    this.stopSpinning();
+    this.spinVerticalInterval = window.setInterval(() => {
+      this.camera.position.applyAxisAngle(new THREE.Vector3(1, 0, 0), 0.02);
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      this.renderer.render(this.scene, this.camera);
+    }, 16);
+  }
+
+  stopSpinning(): void {
+    if (this.spinInterval) {
+      clearInterval(this.spinInterval);
+      this.spinInterval = null;
+    }
+    if (this.spinVerticalInterval) {
+      clearInterval(this.spinVerticalInterval);
+      this.spinVerticalInterval = null;
+    }
   }
 }
